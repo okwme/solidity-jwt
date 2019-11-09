@@ -1,15 +1,15 @@
 {
   "contractName": "Base64",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.4+commit.9549d8ff\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/spalladino/Projects/solidity-jwt/contracts/Base64.sol\":\"Base64\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/spalladino/Projects/solidity-jwt/contracts/Base64.sol\":{\"keccak256\":\"0x57d1abc363b29a510eb09163a752298d4a7b9b8ec4b04270f68832cc7ae926d0\",\"urls\":[\"bzzr://880482c60974985d8b049ccc2a8a004a7f7ca26f97ab91496a36ebd4b1dba4b5\"]}},\"version\":1}",
-  "bytecode": "0x604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a723058200c64d7c7f8a3aa8359f29c361789ac086e3b2baaa5109d0e4b47e989d8a8fe0b0029",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a723058200c64d7c7f8a3aa8359f29c361789ac086e3b2baaa5109d0e4b47e989d8a8fe0b0029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.4+commit.9549d8ff\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/billy/GitHub.com/okwme/sheetcoin/contracts/Base64.sol\":\"Base64\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/billy/GitHub.com/okwme/sheetcoin/contracts/Base64.sol\":{\"keccak256\":\"0x57d1abc363b29a510eb09163a752298d4a7b9b8ec4b04270f68832cc7ae926d0\",\"urls\":[\"bzzr://880482c60974985d8b049ccc2a8a004a7f7ca26f97ab91496a36ebd4b1dba4b5\"]}},\"version\":1}",
+  "bytecode": "0x604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a723058208c6698e9072abed44d00adda19b286ad55d5f4ed4e806e60ce4a10c81ba4143a0029",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea165627a7a723058208c6698e9072abed44d00adda19b286ad55d5f4ed4e806e60ce4a10c81ba4143a0029",
   "sourceMap": "25:1751:0:-;;132:2:-1;166:7;155:9;146:7;137:37;252:7;246:14;243:1;238:23;232:4;229:33;270:1;265:20;;;;222:63;;265:20;274:9;222:63;;298:9;295:1;288:20;328:4;319:7;311:22;352:7;343;336:24",
   "deployedSourceMap": "25:1751:0:-;;;;;;;;",
   "source": "pragma solidity ^0.5.0;\n\nlibrary Base64 {\n\n    bytes constant private base64stdchars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\";\n    bytes constant private base64urlchars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_\";\n\n    function encode(string memory _str) internal pure returns (string memory) {\n\n        bytes memory _bs = bytes(_str);\n        uint256 rem = _bs.length % 3;\n\n        uint256 res_length = (_bs.length + 2) / 3 * 4 - ((3 - rem) % 3);\n        bytes memory res = new bytes(res_length);\n\n        uint256 i = 0;\n        uint256 j = 0;\n\n        for (; i + 3 <= _bs.length; i += 3) {\n            (res[j], res[j+1], res[j+2], res[j+3]) = encode3(\n                uint8(_bs[i]),\n                uint8(_bs[i+1]),\n                uint8(_bs[i+2])\n            );\n\n            j += 4;\n        }\n\n        if (rem != 0) {\n            uint8 la0 = uint8(_bs[_bs.length - rem]);\n            uint8 la1 = 0;\n\n            if (rem == 2) {\n                la1 = uint8(_bs[_bs.length - 1]);\n            }\n\n            (byte b0, byte b1, byte b2, byte b3) = encode3(la0, la1, 0);\n            res[j] = b0;\n            res[j+1] = b1;\n            if (rem == 2) {\n              res[j+2] = b2;\n            }\n        }\n\n        return string(res);\n    }\n\n    function encode3(uint256 a0, uint256 a1, uint256 a2)\n        private\n        pure\n        returns (byte b0, byte b1, byte b2, byte b3)\n    {\n\n        uint256 n = (a0 << 16) | (a1 << 8) | a2;\n\n        uint256 c0 = (n >> 18) & 63;\n        uint256 c1 = (n >> 12) & 63;\n        uint256 c2 = (n >>  6) & 63;\n        uint256 c3 = (n      ) & 63;\n\n        b0 = base64urlchars[c0];\n        b1 = base64urlchars[c1];\n        b2 = base64urlchars[c2];\n        b3 = base64urlchars[c3];\n    }\n\n}",
-  "sourcePath": "/home/spalladino/Projects/solidity-jwt/contracts/Base64.sol",
+  "sourcePath": "/home/billy/GitHub.com/okwme/sheetcoin/contracts/Base64.sol",
   "ast": {
-    "absolutePath": "/home/spalladino/Projects/solidity-jwt/contracts/Base64.sol",
+    "absolutePath": "/home/billy/GitHub.com/okwme/sheetcoin/contracts/Base64.sol",
     "exportedSymbols": {
       "Base64": [
         293
@@ -4199,7 +4199,7 @@
     "src": "0:1776:0"
   },
   "legacyAST": {
-    "absolutePath": "/home/spalladino/Projects/solidity-jwt/contracts/Base64.sol",
+    "absolutePath": "/home/billy/GitHub.com/okwme/sheetcoin/contracts/Base64.sol",
     "exportedSymbols": {
       "Base64": [
         293
@@ -8394,7 +8394,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-10-26T13:56:39.737Z",
+  "updatedAt": "2019-11-09T14:30:34.569Z",
   "devdoc": {
     "methods": {}
   },

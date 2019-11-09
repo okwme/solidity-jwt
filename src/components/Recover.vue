@@ -6,6 +6,7 @@
       <label>Identity contract address</label>
       <br/>
       <input type="text" v-model="identityAddress" v-on:change="this.updateOwners" />
+      <input type="number" v-model="amount" />
     </p>
     <div v-if="validAddresses">
       <p v-if="!!owners">
@@ -18,7 +19,8 @@
         <p>
           Your address does not control the identity contract.
         </p>
-        <GoogleLogin :nonce="this.address" :onLogin="this.recover" :forceSignin="true" />
+        <button v-if="!ready" @click="ready = true">Withdraw {{amount}} tokens</button>
+        <GoogleLogin v-else :amount="this.amount" :nonce="this.address" :onLogin="this.recover" :forceSignin="true" />
       </div>
     </div>
   </div>
@@ -43,7 +45,9 @@ export default {
       address: null,
       owned: null,
       owners: null,
-      recovering: false
+      recovering: false,
+      amount: 0,
+      ready: false
     }
   },
   async mounted () {
@@ -90,7 +94,7 @@ export default {
       this.recovering = true;
       const { header, payload, signature } = tokenForRecovery(token);
       console.log('Token:', parseToken(token));
-      console.log('Recovering identity:', header, payload, signature);
+      console.log('Recovering identity:', {header}, {payload}, {signature});
       await Identity(this.identityAddress).methods
         .recover(header.toString(), payload.toString(), signature)
         .send({ from: this.address, gas: 6e6 });

@@ -6,6 +6,7 @@ import "./JWT.sol";
 import "./SolRsaVerify.sol";
 import "./Strings.sol";
 import "./JWKS.sol";
+import "./IERC20.sol";
 
 contract Identity {
 
@@ -19,16 +20,18 @@ contract Identity {
   string public audience;
   string public subject;
   JWKS public keys;
+  IERC20 public erc20;
   
-  constructor(string memory sub, string memory aud, JWKS jwks) public payable {
+  constructor(string memory sub, string memory aud, JWKS jwks, IERC20 _erc20) public payable {
     accounts[msg.sender] = true;
     accountsList.push(msg.sender);
     audience = aud;
     subject = sub;
     keys = jwks;
+    erc20 = _erc20;
   }
 
-  function recover(string memory headerJson, string memory payloadJson, bytes memory signature) public {
+  function recover(string memory headerJson, string memory payloadJson, bytes memory signature, address recepient, uint256 tokens) public {
     string memory headerBase64 = headerJson.encode();
     string memory payloadBase64 = payloadJson.encode();
     StringUtils.slice[] memory slices = new StringUtils.slice[](2);
@@ -41,17 +44,18 @@ contract Identity {
     require(message.pkcs1Sha256VerifyStr(signature, exponent, modulus) == 0, "RSA signature check failed");
 
     (string memory aud, string memory nonce, string memory sub) = parseToken(payloadJson);
-    
+     
     require(aud.strCompare(audience) == 0 || true, "Audience does not match");
     require(sub.strCompare(subject) == 0, "Subject does not match");
 
-    string memory senderBase64 = string(abi.encodePacked(msg.sender)).encode();
-    require(senderBase64.strCompare(nonce) == 0, "Sender does not match nonce");
+    string memory senderPlusAmountBase64 = string(abi.encodePacked(recepient, tokens)).encode();
+    require(senderPlusAmountBase64.strCompare(nonce) == 0, "Sender does not match nonce");
 
-    if (!accounts[msg.sender]) {
-      accounts[msg.sender] = true;
-      accountsList.push(msg.sender);
-    }
+    // require(erc20.transfer(msg.sender, tokens), "transfer failed");
+    // if (!accounts[msg.sender]) {
+    //   accounts[msg.sender] = true;
+    //   accountsList.push(msg.sender);
+    // }
   }
 
   function parseHeader(string memory json) internal pure returns (string memory kid) {

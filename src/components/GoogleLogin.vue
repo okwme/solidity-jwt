@@ -12,6 +12,7 @@ export default {
   props: {
     onLogin: { type: Function, required: true },
     nonce: { type: String },
+    amount: { },
     forceSignin: { type: Boolean }
   },
   data () {
@@ -20,14 +21,14 @@ export default {
     }
   },
   mounted () {
-    
   },
   created () {
+    const amount = this.amount.toString(16).padStart(64, '0')
     gapi.load('auth2', () => {
       gapi.auth2.init({
         client_id: process.env.VUE_APP_GOOGLE_CLIENT_ID,
         ux_mode: 'popup',
-        nonce: this.nonce ? Buffer.from(this.nonce.slice(2), 'hex').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '') : null,
+        nonce: this.nonce ? Buffer.from(this.nonce.slice(2) + amount, 'hex').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '') : null,
         scope: 'openid email'
       }).then(() => (
         this.forceSignin ? this.signOut() : Promise.resolve(true)

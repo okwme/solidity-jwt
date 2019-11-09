@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
   networks: {
     local: {
@@ -12,7 +14,7 @@ module.exports = {
       network_id: '4447',
       gas: 6000000
     },
-    "rinkeby-infura": {
+    rinkeby: {
       provider: () => new (require("truffle-hdwallet-provider"))(process.env.MNEMONIC, "https://rinkeby.infura.io/v3/" + process.env.INFURA_ID),
       network_id: 4,
       gas: 5000000,
